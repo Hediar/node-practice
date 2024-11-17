@@ -5,8 +5,8 @@ const expressHbs = require('express-handlebars');
 
 const app = express();
 
-app.engine('handlebars', expressHbs()) // 설정한 이름 동일하게 사용하기
-app.set('view engine', 'handlebars'); // key로 express와 연결 (pug => handlebars)
+app.engine('hbs', expressHbs({layoutsDir: 'views/layouts/', defaultLayout: 'main-layout', extname: 'hbs'})) // 설정한 이름 동일하게 사용하기
+app.set('view engine', 'hbs'); // key로 express와 연결 (pug => hbs)
 app.set('views', 'views'); //기본값이 views이지만 다른 이름으로 저장 가능
 
 const adminData = require('./routes/admin');
