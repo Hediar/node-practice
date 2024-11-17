@@ -8,8 +8,8 @@ const router = express.Router();
 
 router.get('/', (req, res, next) => {
   const products = adminData.products;
-  res.render('shop', {prods: products, docTitle: 'Shop'}); // 기본 설정은 app.js에서 set을 통해 경로 설정함
-  // 두번째 변수는 템플릿으로 데이터 전달
+  res.render('shop', {prods: products, pageTitle: 'Shop', path: '/'});
+    // 두번째 변수는 템플릿으로 데이터 전달
 });
 
 module.exports = router;
