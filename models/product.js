@@ -22,6 +22,7 @@ module.exports = class Product{
         this.price = price;
       }
     save(){
+        this.id = Math.random().toString();
         getProductsFromFile(products => {
             products.push(this);
             fs.writeFile(p, JSON.stringify(products), err => {
@@ -36,4 +37,11 @@ module.exports = class Product{
     /**
      * fetchAll -> 함수 실행 -> 제품 나옴 -> 해당 제품을 통해 응답 렌더링
      */
+
+    static findById(id, cb) {
+        getProductsFromFile(products => {
+            const product = products.find(p => p.id === id);
+            cb(product);
+        }); // 파일 전체 읽기
+    }
 }
