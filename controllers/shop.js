@@ -2,32 +2,40 @@ const Product = require('../models/product');
 const Cart = require('../models/cart');
 
 exports.getProducts = (req, res, next) => {
-  Product.fetchAll(products => {
+  Product.fetchAll()
+  .then(([rows, _]) => {
     res.render('shop/product-list', {
-      prods: products,
+      prods: rows,
       pageTitle: 'All Products',
       path: '/products'
     });
-  }); // 새로운거(new Product('dummy')) x, 정적 방법으로 생성
+  })
+  .catch(err => console.log(err)); // 새로운거(new Product('dummy')) x, 정적 방법으로 생성
+
 };
 
 // 상품 하나 불러오기
 exports.getProduct = (req, res, next) => {
   // produtc/:productId 선언한게 담겨있음
   const proId = req.params.productId; 
-  Product.findById(proId, product => {
-    res.render('shop/product-detail', { product: product, pageTitle: product.pageTitle, path: '/products' });
-  });
+  Product.findById(proId)
+  .then(([product, _]) => {
+    res.render('shop/product-detail', { product: product[0], pageTitle: product.pageTitle, path: '/products' });
+  })
+  .catch(err => console.log(err));
 }
 
 exports.getIndex = (req, res, next) => {
-  Product.fetchAll(products => {
+  Product.fetchAll()
+  .then(([rows, fieldData]) => {
     res.render('shop/index', {
-      prods: products,
+      prods: rows,
       pageTitle: 'Shop',
       path: '/'
     });
-  });
+  })
+  .catch(err => console.log(err));
+
 };
 
 exports.getCart = (req, res, next) => {
