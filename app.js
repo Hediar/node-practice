@@ -43,7 +43,7 @@ app.use((req, res, next) => {
 })
 
 app.use((req, res, next) => {
-  User.findById('675ea65fe08f1ad46d709bb4') // 임의의 사용자 
+  User.findById('675eabd96556ac9336bf8d61') // 임의의 사용자 
     .then(user => {
       req.user = user;
       next();

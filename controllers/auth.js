@@ -20,7 +20,7 @@ exports.postLogin = (req, res, next) => {
   // 쿠키 설정 key-value, Expires(Max-Age) : 쿠키 만료일 설정
   // Domain:  쿠키 전달, Secure: HTTPS를 통해 페이지가 제공될 경우에만 설정
   // HttpOnly
-  User.findById('675ea65fe08f1ad46d709bb4')
+  User.findById('675eabd96556ac9336bf8d61')
   .then(user => {
     req.session.isLoggedIn = true;
     req.session.user = user;
