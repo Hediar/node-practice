@@ -24,7 +24,11 @@ exports.postLogin = (req, res, next) => {
   .then(user => {
     req.session.isLoggedIn = true;
     req.session.user = user;
-    res.redirect('/');
+    req.session.save((err) => {
+      console.log(err);
+      res.redirect('/');
+    }); // session 저장 확실히 실행 후, 다음 함수 호출
+    // 보통은 사용 안하는데 redirect의 경우, 설정된 것을 보장해야 할 때에는 반드시 호출
   })
   .catch(err => console.log(err));
 };
