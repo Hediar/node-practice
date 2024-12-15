@@ -31,7 +31,19 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(session({secret: 'my secret', resave: false, saveUninitialized: false, store: store}));
 
 app.use((req, res, next) => {
-  User.findById('5bab316ce0a7c75f783cb8a8') // 임의의 사용자 
+  if(!req.session.user){ 
+    return next();
+  }
+  User.findById(req.session.user._id)
+  .then(user => {
+    req.user = user;
+    next();
+  })
+  .catch(err => console.log(err));
+})
+
+app.use((req, res, next) => {
+  User.findById('675ea65fe08f1ad46d709bb4') // 임의의 사용자 
     .then(user => {
       req.user = user;
       next();
