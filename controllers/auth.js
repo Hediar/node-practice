@@ -1,3 +1,5 @@
+const bcrypt = require('bcryptjs');
+
 const User = require('../models/user');
 
 exports.getLogin = (req, res, next) => {
@@ -15,22 +17,76 @@ exports.getLogin = (req, res, next) => {
   });
 };
 
+exports.getSignup = (req, res, next) => {
+  res.render('auth/signup', {
+    path: '/signup',
+    pageTitle: 'Signup',
+    isAuthenticated: false
+  });
+};
+
 exports.postLogin = (req, res, next) => {
-  // res.setHeader('Set-Cookie', 'loggedIn=true; HttpOnly'); 
-  // 쿠키 설정 key-value, Expires(Max-Age) : 쿠키 만료일 설정
-  // Domain:  쿠키 전달, Secure: HTTPS를 통해 페이지가 제공될 경우에만 설정
-  // HttpOnly
-  User.findById('675eabd96556ac9336bf8d61')
+// email로 사용자 찾기
+const email = req.body.email;
+const password = req.body.password;
+  User.findOne({email: email})
   .then(user => {
-    req.session.isLoggedIn = true;
-    req.session.user = user;
-    req.session.save((err) => {
+    if (!user) {
+      return res.redirect('/login');
+    }
+    bcrypt
+    .compare(password, user.password)
+    .then(doMatch => {
+      if (doMatch) {
+        req.session.isLoggedIn = true;
+        req.session.user = user;
+        return req.session.save((err) => {
+          console.log(err);
+          return res.redirect('/');
+        }); 
+      }
+      res.redirect('/login');
+    })
+    .catch(err => {
       console.log(err);
-      res.redirect('/');
-    }); // session 저장 확실히 실행 후, 다음 함수 호출
-    // 보통은 사용 안하는데 redirect의 경우, 설정된 것을 보장해야 할 때에는 반드시 호출
+      res.redirect('/login');
+    });
+    
   })
   .catch(err => console.log(err));
+};
+
+exports.postSignup = (req, res, next) => {
+  const email = req.body.email;
+  const password = req.body.password;
+  const confirmPassword = req.body.confirmPassword;
+  /**
+   * 1. 사용자 validation
+   * 2. 이미 있는 사용자인지 확인
+   * 3. 사용자 생성
+   */
+  User.findOne({email: email}).then(userDoc => {
+    if (userDoc) {
+      // 일단 생성하지 못하게 redirect
+      return res.redirect('/signup');
+    }
+
+    return bcrypt.hash(password, 12);
+  })
+  .then(hashPassword => {
+    const user = new User({
+      email: email,
+      password: hashPassword,
+      cart: { items: [] }
+    });
+    return user.save(); // 유효한 사용자 DB에 저장
+  })
+  .then(result => {
+    res.redirect('/login');
+  })
+  .catch(err => {
+    console.log(err)
+  });
 };
 
 exports.postLogout = (req, res, next) => {
