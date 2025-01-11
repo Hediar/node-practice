@@ -71,6 +71,7 @@ app.get('/500', errorController.get500); // 500 error 발생할 경우 res.redir
 app.use(errorController.get404);
 
 app.use((error, req, res, next) => {
+  // res.status(error.httpStatusCode).render(); // error 다루기 
   res.redirect('/500');
 }); // 순서가 가장 마지막으로 
 
