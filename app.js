@@ -35,6 +35,14 @@ app.use(session({secret: 'my secret', resave: false, saveUninitialized: false, s
 app.use(csrfProtection);
 app.use(flash());
 
+// 모든 페이지에 인증 토큰 추가
+app.use((req, res, next) => {
+  res.locals.isAuthenticated = req.session.isLoggedIn;
+  res.locals.csrfToken = req.csrfToken();
+  next();
+});
+
+
 app.use((req, res, next) => {
   if(!req.session.user){ 
     return next();
@@ -54,12 +62,6 @@ app.use((req, res, next) => {
       next();
     })
     .catch(err => console.log(err));
-});
-// 모든 페이지에 인증 토큰 추가
-app.use((req, res, next) => {
-  res.locals.isAuthenticated = req.session.isLoggedIn;
-  res.locals.csrfToken = req.csrfToken();
-  next();
 });
 
 app.use('/admin', adminRoutes);
