@@ -1,4 +1,5 @@
 const { validationResult } = require('express-validator');
+const mongoose = require('mongoose')
 
 const Product = require('../models/product');
 
@@ -39,6 +40,7 @@ exports.postAddProduct = (req, res, next) => {
   }
 
   const product = new Product({
+    _id: mongoose.Types.ObjectId(), // 오류를 발생시키기 위한 이미 있는 상품의 id
     title: title,
     price: price,
     description: description,
@@ -54,6 +56,9 @@ exports.postAddProduct = (req, res, next) => {
     })
     .catch(err => {
       console.log(err);
+      const error = new Error(err);
+      error.httpStatusCode = 500;
+      return next(error); // error 전달
     });
 };
 
@@ -65,6 +70,7 @@ exports.getEditProduct = (req, res, next) => {
   const prodId = req.params.productId;
   Product.findById(prodId)
     .then(product => {
+      throw new Error('Dummy'); // 실패 강제로 던져보기
       if (!product) {
         return res.redirect('/');
       }
