@@ -31,7 +31,7 @@ const authRoutes = require('./routes/auth');
 
 // 미들웨어 설정
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use(multer().single('image'))
+app.use(multer({dest: 'images'}).single('image'));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(session({secret: 'my secret', resave: false, saveUninitialized: false, store: store}));
 app.use(csrfProtection);
