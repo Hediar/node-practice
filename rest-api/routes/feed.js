@@ -8,6 +8,6 @@ const router = express.Router();
 router.get('/posts', feedController.getPosts);
 
 // POST /feed/post
-router.post('/post', feedController.postPost);
+router.post('/post', feedController.createPost);
 
 module.exports = router;
