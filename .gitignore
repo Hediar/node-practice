@@ -21,3 +21,4 @@ frontend/yarn-debug.log*
 frontend/yarn-error.log*
 
 rest-api/node_modules
+rest-api/.env
